@@ -41,9 +41,6 @@ public class ArrListPanel {
 	/** Control field */
 	private JPanel panel2;
 	
-	/** Create an instance of javax.swing.JTextArea control */
-	JTextArea txtConsole;
-	
 	/** Constructor */
 	public ArrListPanel(JComponent panel) {
 		// Initialize the graph display and control fields
@@ -51,18 +48,7 @@ public class ArrListPanel {
 		panel1 = new JPanel();
 		alml = new ArrListMouseListener();
 		instr = new JLabel("Click to add new nodes; drag to move.");
-		panel2 = new JPanel();
-		txtConsole = new JTextArea();
-
-		// Now create a new TextAreaOutputStream to write to our JTextArea control and wrap a
-		// PrintStream around it to support the println/printf methods.
-		PrintStream out = new PrintStream(new TextAreaOutputStream(txtConsole));
-
-		// redirect standard output stream to the TextAreaOutputStream
-		System.setOut(out);
-
-		// redirect standard error stream to the TextAreaOutputStream
-		System.setErr(out);		
+		panel2 = new JPanel();	
 
 		createComponents(panel);
 		
@@ -109,9 +95,6 @@ public class ArrListPanel {
 		JButton editButton = new JButton("Edit ArrayList");
 		panel2.add(editButton);
 		editButton.addActionListener(new EditArrListListener());	
-		
-		panel2.add(txtConsole);
-		panel2.add(new JScrollPane(txtConsole));
 		
 		panel.add(panel2);	
 	}
