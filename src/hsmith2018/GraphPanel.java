@@ -342,15 +342,7 @@ public class GraphPanel {
 					canvas.ids.add(Integer.valueOf(idNode));
 					canvas.points.add(pointToCreate);
 					canvas.colors.add(Color.RED);
-				} else {
-					Toolkit.getDefaultToolkit().beep();
-					JFrame frame = new JFrame("");
-					// Warning
-					JOptionPane.showMessageDialog(frame,
-							"Failed click on empty space. Start adding nodes again.",
-							"Click Warning",
-							JOptionPane.WARNING_MESSAGE);
-				}
+				} 
 				canvas.repaint();
 				break;
 			case RMV_NODES:

@@ -6,25 +6,33 @@ import java.util.Timer;
 import java.awt.*;
 import javax.swing.*;  
 /**
- *  Implement a graphical canvas that displays a graph of nodes (represented by points) and edges (represented by lines)
+ *  Implement a graphical canvas that displays an array
+ *  elements demonstrated by rectangles
  *
  *  @author  Ha Cao (modded by Sarah Abowitz)
  *  @version CSC 112, May 1st 2017
  */
 
-public class ArrayCanvas extends JComponent{
-	private int[] arr = {211, 222, 233, 244, 255, 266, 277, 288, 299};
-	private ArrayList<String> annotations = new ArrayList<String>();
+// why wasn't access working? you deleted the thing that was supposed to make it cyan
+
+public class ArrayCanvas extends JComponent {	
+	private static final long serialVersionUID = 1L;
+	/** The array */
+	protected int[] arr;
+	/** The annotations that show the indices and contents of the elements */
+	protected ArrayList<String> annotations;
 	boolean addingToArr = false;
 	private int access = 10;
-
+	
 	/** Constructor */
 	public ArrayCanvas() {
-		setMinimumSize(new Dimension(500,700));
-		setPreferredSize(new Dimension(500,700));
+		arr = new int[10];
+		annotations = new ArrayList<String>();
+		setMinimumSize(new Dimension(500, 700));
+		setPreferredSize(new Dimension(500, 700));
 	}
-    
-    public void setArr(int[] array){
+	
+	public void setArr(int[] array){
     	for(int i=0; i<array.length; i++){
     		arr[i] = array[i];
     	}
@@ -40,24 +48,25 @@ public class ArrayCanvas extends JComponent{
     	Timer timer = new Timer();
     	long delay = 2500;
     	boolean found = false;
-    	while (!found && j <= arr.length){
+    	for (j = 0; j <= arr.length || arr[j]!=match ; j++){
     		final int i = j;
     		timer.schedule(new TimerTask(){
     			@Override
     			public void run(){
     				if (i > arr.length){
-    					
+    					annotations.add("");
     				} else if (arr[i] == match){
     					annotations.add("Query found!");
-    					// DO SOMETHING
+    					// break;
     				} else {
     					annotations.add("Still searching...");
     				}
     				ArrayCanvas.this.repaint();
     			}
     		}, delay*j);  
-    		
+    		ArrayCanvas.this.repaint();
     	}
+    	annotations.clear();
     }
     
     public void arrAccess(int index){

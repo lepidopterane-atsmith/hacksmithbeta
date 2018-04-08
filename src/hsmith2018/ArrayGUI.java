@@ -47,7 +47,7 @@ boolean arrayMode = true;
 	/** Graph display fields */
 	private Container pane;
 	private JPanel panel1;
-	private GraphMouseListener gml;
+	private ArrayMouseListener gml;
 
 	/** Control field */
 	private JPanel panel2;
@@ -59,7 +59,7 @@ boolean arrayMode = true;
 		pane = graphFrame.getContentPane();
 		canvas = new ArrayCanvas();
 		panel1 = new JPanel();
-		gml = new GraphMouseListener();
+		gml = new ArrayMouseListener();
 		instr = new JLabel("Click to add new nodes; drag to move.");
 		panel2 = new JPanel();
 	}
@@ -235,7 +235,7 @@ boolean arrayMode = true;
 	}
 
 	/** Mouse listener for ArrayCanvas element */
-	private class GraphMouseListener extends MouseAdapter
+	private class ArrayMouseListener extends MouseAdapter
 	implements MouseMotionListener {
 
 		/** Responds to click event depending on mode */
@@ -324,7 +324,21 @@ boolean arrayMode = true;
 	
 				break;	
 			case BFT:
-				// TODO Editing Coming Soon!!!!!
+				Point accClick2 = new Point((int) e.getX(), (int) e.getY());
+				int[] mockArr = canvas.getArr();
+				int arrLen = canvas.getArr().length;
+				int itemClicked = 10; // if itemClicked stays at 10, no hitbox clicked
+				for (int i = 0; i < arrLen; i++){
+					int y1 = 26+(60*i);
+					int y2 = 76+(60*i);
+					if (zoneClicked(22,422,y1,y2,accClick2)) {itemClicked = i;}
+				} if(itemClicked < canvas.getArr().length){
+					JFrame addQuestion = new JFrame("Add an entry");
+					String init = JOptionPane.showInputDialog(addQuestion, "What integer should go in arr["+itemClicked+"]?");
+					int i = Integer.valueOf(init);
+					mockArr[itemClicked] = i;
+					canvas.setArr(mockArr);
+				} 
 				
 				canvas.repaint();
 				break;		

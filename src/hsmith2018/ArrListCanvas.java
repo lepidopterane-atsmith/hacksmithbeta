@@ -123,11 +123,11 @@ public class ArrListCanvas extends JComponent{
 			g.setColor(Color.BLACK);
 			g.drawString("arrList.get("+i+") = "+arrList.get(i), 30, 50+(60*i));
 			if (aLAnnotations.size()>i && aLAnnotations.size()>0){
-				g.drawString(aLAnnotations.get(i), 150, 50+(60*i));
+				g.drawString(aLAnnotations.get(i), 170, 50+(60*i));
 				
 			}
 			if (addingToAL && arrList.size() < aLAnnotations.size()){
-				g.drawString(aLAnnotations.get(aLAnnotations.size()-1), 150, 50+(60*arrList.size()));
+				g.drawString(aLAnnotations.get(aLAnnotations.size()-1), 170, 50+(60*arrList.size()));
 			}
 		}
 		

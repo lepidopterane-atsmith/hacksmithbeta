@@ -190,16 +190,11 @@ public class ArrListPanel {
 			case ADD_ENTRY:
 				if(canvas.getArrList().size() < 10){
 					JFrame addQuery = new JFrame("Add an entry");
-					String insertPlace = JOptionPane.showInputDialog(addQuery, "Type the index of where you want to add your element.");
-					int index = Integer.valueOf(insertPlace);
 					String number = JOptionPane.showInputDialog(addQuery, "Type the integer value of your element.");
 					int num = Integer.valueOf(number);
 					instr.setText("Copying array into new array with new item.");
-					if(index < canvas.getArrList().size()+1){
-						canvas.arrListAddition(num);
-					} else {
-						instr.setText("Addition out of bounds.");
-					}
+					canvas.arrListAddition(num);
+					
 				}else{
 							Toolkit.getDefaultToolkit().beep();
 							JFrame frame = new JFrame("");
@@ -250,6 +245,23 @@ public class ArrListPanel {
 			case SEARCH_ARRLIST:
 				break;
 			case EDIT_ARRLIST:
+				Point accClick2 = new Point((int) e.getX(), (int) e.getY());
+				ArrayList<Integer> mockArrList = canvas.getArrList();
+				int arrListLen = canvas.getArrList().size();
+				int thingClicked = 10; // if itemClicked stays at 10, no hitbox clicked
+				for (int i = 0; i < arrListLen; i++){
+					int y1 = 26+(60*i);
+					int y2 = 76+(60*i);
+					if (zoneClicked(22,422,y1,y2,accClick2)) {thingClicked = i;}
+				} if(thingClicked < canvas.getArrList().size()){
+					JFrame addQuestion = new JFrame("Add an entry");
+					String init = JOptionPane.showInputDialog(addQuestion, "What integer should go in arrList.get("+thingClicked+")?");
+					int i = Integer.valueOf(init);
+					mockArrList.set(thingClicked,i);
+					canvas.setArrList(mockArrList);
+				} 
+				
+				canvas.repaint();
 				break;
 			}
 		}

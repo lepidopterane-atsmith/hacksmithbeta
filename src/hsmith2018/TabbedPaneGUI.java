@@ -8,7 +8,9 @@ import javax.swing.*;
  * @version Apr 7th, 2018
  */
 
-public class TabbedPaneGUI extends JPanel {	
+public class TabbedPaneGUI extends JPanel {
+	private static final long serialVersionUID = 1L;
+
 	public TabbedPaneGUI() {
 		super(new GridLayout(1, 1));
 		
@@ -18,13 +20,17 @@ public class TabbedPaneGUI extends JPanel {
 		
 		// Tab for graph
 		JComponent panel1 = new JPanel();
-		GraphPanel graphPanel = new GraphPanel(panel1);
+		new GraphPanel(panel1);
 		tabbedPane.addTab("Graph", panel1);
 		
 		// Tab for array
 		JComponent panel2 = new JPanel();
-		// ArrayPanel arrayPanel = new ArrayPanel(panel2);
+		new ArrayPanel(panel2);
 		tabbedPane.addTab("Array", panel2);
+		
+		JComponent panel3 = new JPanel();
+		new ArrListPanel(panel3);
+		tabbedPane.addTab("ArrayList", panel3);
 		
 		// Add the tabbed pane to this panel
 		add(tabbedPane);
