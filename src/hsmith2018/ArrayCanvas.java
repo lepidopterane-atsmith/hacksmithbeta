@@ -15,11 +15,11 @@ import javax.swing.*;
 public class ArrayCanvas extends JComponent {	
 	private static final long serialVersionUID = 1L;
 	/** The array */
-	private int[] arr;
+	protected int[] arr;
 	/** The annotations that show the indices and contents of the elements */
-	private ArrayList<String> annotations;
+	protected ArrayList<String> annotations;
 	/** The list of colors of all the nodes */
-	private ArrayList<Color> colors;	
+	protected ArrayList<Color> colors;	
 
 	/** Constructor */
 	public ArrayCanvas() {

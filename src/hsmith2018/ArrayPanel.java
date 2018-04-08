@@ -2,10 +2,7 @@ package hsmith2018;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.Point2D;
 import java.util.*;
-import java.util.Queue;
-import java.io.*;
 import javax.swing.*;
 
 /**
@@ -24,12 +21,9 @@ public class ArrayPanel {
 	/** The input mode */
 	private InputMode mode = InputMode.CREATE_ARRAY;
 
-	/** Remember point where last mouse-down event occurred */
-	private Point pointUnderMouse;
-
 	/** Graph display fields */
 	private JPanel panel1;
-	private GraphMouseListener gml;
+	private ArrayMouseListener aml;
 
 	/** Control field */
 	private JPanel panel2;
@@ -39,10 +33,23 @@ public class ArrayPanel {
 		// Initialize the array display and control fields
 		canvas = new ArrayCanvas();
 		panel1 = new JPanel();
-		gml = new GraphMouseListener();
+		aml = new ArrayMouseListener();
 		instr = new JLabel("");
 		panel2 = new JPanel();
 		createComponents(panel);
+	}
+	
+	/**
+	 * A method to default the colors of the nodes, the point under mouse, previous point and twoNodeClick boolean,
+	 * to return to the original display condition when changing modes
+	 */
+	public void defaultVar(ArrayCanvas canvas) {
+		// Paint the nodes as green again 
+		for (int i = 0; i < canvas.colors.size(); i++) {
+			canvas.setElementColor(i, Color.GREEN);
+		}
+		// Default these values to so that new modes can begin from scratch
+		canvas.repaint();
 	}
 	
 	/** Puts content in the GUI window */
@@ -50,8 +57,8 @@ public class ArrayPanel {
 		// Array display
 		panel.setLayout(new FlowLayout());
 		panel1.setLayout(new BorderLayout());
-		canvas.addMouseListener(gml);
-		canvas.addMouseMotionListener(gml);
+		canvas.addMouseListener(aml);
+		canvas.addMouseMotionListener(aml);
 		panel1.add(canvas);
 		panel1.add(instr, BorderLayout.NORTH);
 		
@@ -59,8 +66,8 @@ public class ArrayPanel {
 
 		// Controls
 		panel2.setLayout(new GridLayout(5,2));	
-		
-		JButton createArrayButton = new JButton("Create a new array");
+			
+		JButton createArrayButton = new JButton("Create a new customized array");
 		panel2.add(createArrayButton);
 		createArrayButton.addActionListener(new createArrayListener());
 
@@ -79,6 +86,7 @@ public class ArrayPanel {
 		panel.add(panel2);	
 	}
 
+	/** A method to find which element is clicked on */
 	public boolean zoneClicked(int x1, int x2, int y1, int y2, Point pt){
 		int xPrime = (int) pt.getX();
 		int yPrime = (int) pt.getY();
@@ -104,178 +112,123 @@ public class ArrayPanel {
 	private class createArrayListener implements ActionListener {
 		/** Event handler for createArray button */
 		public void actionPerformed(ActionEvent e) {
-			mode = InputMode.CREATE_ARRAY;
-			addPtInstr = "Click above, between, or below slots to add an element.";
-			instr.setText(addPtInstr);
-			//defaultVar(canvas);
+			mode = InputMode.CREATE_ARRAY;			
+			instr.setText("Input the size of array and content of array.");
+			defaultVar(canvas);
+			JFrame frame = new JFrame("User's input of the array");
+			// Prompt the user to enter the input the size and data of the array 
+			int arrSize = Integer.parseInt(JOptionPane.showInputDialog(frame, "What's the size of this array?"));
+			while (arrSize > 10) {
+				Toolkit.getDefaultToolkit().beep();
+				arrSize = Integer.parseInt(JOptionPane.showInputDialog(frame, 
+						  "For demo purpose, array size can't be bigger than 10. Please input the data again!"));
+			}
+			String arrData = JOptionPane.showInputDialog(frame, "List the elements of array separated by whitespace");
+			String[] elements = arrData.split(" ");
+			while (elements.length != arrSize) {
+				Toolkit.getDefaultToolkit().beep();
+				arrData = JOptionPane.showInputDialog(frame, "Please input the data again!");
+				elements = arrData.split(" ");
+			}
+			canvas.arr = new int[arrSize];
+			for (int i = 0; i < elements.length; i++) {
+				canvas.arr[i] = Integer.parseInt(elements[i]);
+			}
+			canvas.repaint();
 		}
 	}
 
-	/** Listener for RmvNode button */ 
-	private class RmvNodeListener implements ActionListener {
-		/** Event handler for RmvNode button */
+	/** Listener for changeValue button */ 
+	private class changeValueListener implements ActionListener {
+		/** Event handler for changeValue button */
 		public void actionPerformed(ActionEvent e) {
-			mode = InputMode.RMV_NODES;
-			rmvPtInstr = "Click an array element to remove it.";
-			instr.setText(rmvPtInstr);
-			//defaultVar(canvas);
+			mode = InputMode.CHANGE_VALUE;
+			instr.setText("Click an array element to change its value.");
+			defaultVar(canvas);			
 		}
 	}
 	
-	/** Listener for AddEdge button */
-	private class AddEdgeListener implements ActionListener {
-		/** Event handler for AddEdge button */
+	/** Listener for access button */
+	private class accessListener implements ActionListener {
+		/** Event handler for access button */
 		public void actionPerformed(ActionEvent e) {
-			mode = InputMode.ADD_EDGES;
-			addEdgeInstr = "Click an array element to access it.";
-			instr.setText(addEdgeInstr);
-			//defaultVar(canvas);
+			mode = InputMode.ACCESS;
+			instr.setText("Give the index of the element you want to access.");
+			defaultVar(canvas);
+			JFrame frame = new JFrame("User's input of element index");
+			// Prompt the user to enter the index of the element they want to access
+			int index = Integer.parseInt(JOptionPane.showInputDialog(frame, "What's the index of the element?"));
+			canvas.colors.set(index, Color.CYAN);
+			canvas.repaint();			
 		}
 	}
 
-	/** Listener for RmvEdge button */
-	private class RmvEdgeListener implements ActionListener {
-		/** Event handler for RmvEdge button */
+	/** Listener for find button */
+	private class findListener implements ActionListener {
+		/** Event handler for find button */
 		public void actionPerformed(ActionEvent e) {
-			mode = InputMode.RMV_EDGES;
-			rmvEdgeInstr = "Click an array element to search for it.";
-			instr.setText(rmvEdgeInstr);
-			//defaultVar(canvas);
+			mode = InputMode.FIND;
+			instr.setText("Give the value you want to find in the array.");
+			defaultVar(canvas);
+			JFrame frame = new JFrame("User's input of element value they want to find");
+			// Prompt the user to enter the value they want to find in the array
+			int value = Integer.parseInt(JOptionPane.showInputDialog(frame, "What's the value you are looking for?"));
+			int index = Arrays.binarySearch(canvas.arr, value);
+			canvas.colors.set(index, Color.CYAN);
+			canvas.repaint();
 		}
 	}
-
-	/** Listener for BFT button */
-	private class BFTListener implements ActionListener {
-		/** Event handler for BFT button */
-		public void actionPerformed(ActionEvent e) {
-			mode = InputMode.BFT;
-			instr.setText("Click a node to broad-traverse the graph.");
-			//defaultVar(canvas);
-		}
-	}
-
 
 	/** Mouse listener for ArrayCanvas element */
-	private class GraphMouseListener extends MouseAdapter
+	private class ArrayMouseListener extends MouseAdapter
 	implements MouseMotionListener {
 
 		/** Responds to click event depending on mode */
 		public void mouseClicked(MouseEvent e) {
 			switch (mode) {
-			case ADD_NODES:
-				// If the click is not on top of an existing node, create a new node and add it to the canvas.
-				// Otherwise, emit a beep, as shown below:
-			if(arrayMode && canvas.getArr().length < 10){
-				JFrame addQuery = new JFrame("Add an entry");
-				String insertPlace = JOptionPane.showInputDialog(addQuery, "Type the index of where you want to add your element.");
-				int index = Integer.valueOf(insertPlace);
-				String number = JOptionPane.showInputDialog(addQuery, "Type the integer value of your element.");
-				int num = Integer.valueOf(number);
-				instr.setText("Copying array into new array with new item.");
-				if(index < canvas.getArr().length+1){
-					canvas.arrAddition(index, num);
-				} else {
-					instr.setText("Addition out of bounds.");
-				}
-			}
-			else{
-						Toolkit.getDefaultToolkit().beep();
-						JFrame frame = new JFrame("");
-						// Warning
-						JOptionPane.showMessageDialog(frame,
-								"Failed click on empty space. Start adding nodes again.",
-								"Click Warning",
-								JOptionPane.WARNING_MESSAGE);
-					
-				}
-				canvas.repaint();
+			case CREATE_ARRAY:
 				break;
-			case RMV_NODES:
-				// If the click is on top of an existing node, remove it from the canvas's graph.
+			case CHANGE_VALUE:
+				// If the click is on top of an existing element, change its value.
 				// Otherwise, emit a beep.
-				Point rmvClick = new Point((int) e.getX(), (int) e.getY());
-				if (arrayMode && canvas.getArr().length > 0){
-					int arrLen = canvas.getArr().length;
-					int itemClicked = 10; // if itemClicked stays at 10, no hitbox clicked
-					for (int i = 0; i < arrLen; i++){
-						int y1 = 26+(60*i);
-						int y2 = 76+(60*i);
-						if (zoneClicked(22,422,y1,y2,rmvClick)) {itemClicked = i;}
+				Point pointUnderMouse = new Point((int) e.getX(), (int) e.getY());
+				int index = -1;
+				int arrLen = canvas.arr.length;
+				for (int i = 0; i < arrLen; i++){
+					int y1 = 26+(60*i);
+					int y2 = 76+(60*i);
+					if (zoneClicked(22,422,y1,y2,pointUnderMouse)) {
+						index = i;
 					}
+				}					
+				
+				if (index != -1) {
+					canvas.colors.set(index, Color.CYAN);
+					canvas.repaint();
 					
-					if (itemClicked < 10){
-						instr.setText("Copying array into new array without item.");
-						canvas.arrRemoval(itemClicked);
-					}
+					JFrame frame = new JFrame("User's input of element value they want to find");
+					// Prompt the user to enter the value they want to find in the array
+					int value = Integer.parseInt(JOptionPane.showInputDialog(frame, "What's the value you are looking for?"));
+					canvas.arr[index] = value;
 					
+					canvas.colors.set(index, Color.GREEN);
+				} else {
+					Toolkit.getDefaultToolkit().beep();
+					JFrame frame = new JFrame("");
+					// Warning
+					JOptionPane.showMessageDialog(frame,
+							"Failed click on empty space. Choosing element again.",
+							"Click Warning",
+							JOptionPane.WARNING_MESSAGE);
 				}
 				canvas.repaint();
 				break;		
-			case ADD_EDGES:
-				// If the click is not on top of an existing node, emit a beep, as shown below.
-				// Otherwise, check how many nodes have been clicked;
-				// If only 1, save the node (which is supposed to be the head).
-				// If already 2, create an edge between the two nodes. 
-				Point accClick = new Point((int) e.getX(), (int) e.getY());
-				if(arrayMode){
-					int arrLen = canvas.getArr().length;
-					int itemClicked = 10; // if itemClicked stays at 10, no hitbox clicked
-					for (int i = 0; i < arrLen; i++){
-						int y1 = 26+(60*i);
-						int y2 = 76+(60*i);
-						if (zoneClicked(22, 422, y1, y2, accClick)) {itemClicked = i;}
-					}
-					instr.setText("The item, if accessed, is in cyan.");
-					if(itemClicked < canvas.getArr().length){
-						canvas.arrAccess(itemClicked);
-					} else {
-						instr.setText("Called element out of bounds.");
-					}
-				} else{
-				
-				
-				canvas.repaint();
-				}
-				break ;		
-			case RMV_EDGES:
-				// TODO Traversal Coming Soon!!!!!!
-				canvas.repaint();
-				break;	
-			case BFT:
-				// TODO Editing Coming Soon!!!!!
-				
-				canvas.repaint();
+			case ACCESS:
 				break;		
-				
-			case OUT_PUT:
+			case FIND:
 				break;
-			}
-		}
-
-		/** Records point under mouse-down event in anticipation of possible drag */
-		public void mousePressed(MouseEvent e) {
-			// Record point under mouse, if any
-			;
-		}
-
-		/** Responds to mouse-up event */
-		public void mouseReleased(MouseEvent e) {
-			// Clear record of point under mouse, if any
-			pointUnderMouse = null;
-		}
-
-		/** Responds to mouse drag event */
-		public void mouseDragged(MouseEvent e) {
-			// If mode allows node motion, and there is a point under the mouse, 
-			// then change its coordinates to the current mouse coordinates & update display
-			if ((mode == InputMode.ADD_NODES) && (pointUnderMouse!=null)) {
-				pointUnderMouse.setLocation((int) e.getX(), (int) e.getY());
-				// Loop through the edge list of this particular node to update the distances
-				
-			canvas.repaint();
 		}
 	}
-
 	// Empty but necessary to comply with MouseMotionListener interface
 	public void mouseMoved(MouseEvent e) {}
 	}

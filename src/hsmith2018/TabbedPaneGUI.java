@@ -25,7 +25,7 @@ public class TabbedPaneGUI extends JPanel {
 		
 		// Tab for array
 		JComponent panel2 = new JPanel();
-		// ArrayPanel arrayPanel = new ArrayPanel(panel2);
+		new ArrayPanel(panel2);
 		tabbedPane.addTab("Array", panel2);
 		
 		// Add the tabbed pane to this panel
