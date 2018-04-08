@@ -44,29 +44,40 @@ public class ArrayCanvas extends JComponent {
     
     public void arrSearch(int match){
     	// while this thing isn't found or we still have array in front of  us
+    	ArrayCanvas.this.repaint();
     	int j = 0;
     	Timer timer = new Timer();
     	long delay = 2500;
     	boolean found = false;
-    	for (j = 0; j <= arr.length || arr[j]!=match ; j++){
+    	System.err.println("Stuff?" + Arrays.toString(arr));
+    	for (j = 0; j <= arr.length; j++){
     		final int i = j;
     		timer.schedule(new TimerTask(){
     			@Override
     			public void run(){
-    				if (i > arr.length){
-    					annotations.add("");
-    				} else if (arr[i] == match){
-    					annotations.add("Query found!");
-    					// break;
-    				} else {
-    					annotations.add("Still searching...");
+    				try {
+	    				if (i > arr.length){
+	    					annotations.add("");
+	    				} else if (arr[i] == match){
+	    					annotations.add("Query found!");
+	    					// break;
+	    				} else {
+	    					annotations.add("Still searching...");
+	    				}
+	    				ArrayCanvas.this.repaint();
+    				} catch (Throwable t) {
+    					t.printStackTrace(System.err);
     				}
-    				ArrayCanvas.this.repaint();
     			}
-    		}, delay*j);  
+    		}, delay*(j+1));  
+    		System.out.println(Arrays.toString(arr));
     		ArrayCanvas.this.repaint();
+    		if (arr[j] == match){
+    			break;
+    		}
     	}
     	annotations.clear();
+    	System.out.println(Arrays.toString(arr));
     }
     
     public void arrAccess(int index){

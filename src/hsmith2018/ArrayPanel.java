@@ -260,6 +260,7 @@ public class ArrayPanel {
 					int i = Integer.valueOf(init);
 					mockArr[itemClicked] = i;
 					canvas.setArr(mockArr);
+					System.out.println(Arrays.toString(canvas.getArr()));
 				} 
 				
 				canvas.repaint();

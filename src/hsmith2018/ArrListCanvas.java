@@ -33,7 +33,44 @@ public class ArrListCanvas extends JComponent{
     	return arrList;
     }
     
-    // TODO go back and fix this Sarah
+    public void arrListSearch(int match){
+    	// while this thing isn't found or we still have array in front of  us
+    	ArrListCanvas.this.repaint();
+    	int j = 0;
+    	Timer timer = new Timer();
+    	long delay = 2500;
+    	boolean found = false;
+    	//System.err.println("Stuff?" + Arrays.toString(arr));
+    	for (j = 0; j <= arrList.size(); j++){
+    		final int i = j;
+    		timer.schedule(new TimerTask(){
+    			@Override
+    			public void run(){
+    				try {
+	    				if (i > arrList.size()){
+	    					aLAnnotations.add("");
+	    				} else if (arrList.get(i) == match){
+	    					aLAnnotations.add("Query found!");
+	    					// break;
+	    				} else {
+	    					aLAnnotations.add("Still searching...");
+	    				}
+	    				ArrListCanvas.this.repaint();
+    				} catch (Throwable t) {
+    					t.printStackTrace(System.err);
+    				}
+    			}
+    		}, delay*(j+1));  
+    		//System.out.println(Arrays.toString(arr));
+    		ArrListCanvas.this.repaint();
+    		if (arrList.get(j) == match){
+    			break;
+    		}
+    	}
+    	aLAnnotations.clear();
+    	//System.out.println(Arrays.toString(arr));
+    }
+    
     public void arrAccess(int index){
     	access = index;
     	ArrListCanvas.this.repaint();

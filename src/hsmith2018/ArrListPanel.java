@@ -153,7 +153,7 @@ public class ArrListPanel {
 		/** Event handler for searchButton */
 		public void actionPerformed(ActionEvent e) {
 			mode = InputMode.SEARCH_ARRLIST;
-			instr.setText("Click anwywhere to start a search.");
+			instr.setText("Click anywhere to start a search.");
 		}
 	}
 
@@ -243,6 +243,10 @@ public class ArrListPanel {
 				}
 				break;
 			case SEARCH_ARRLIST:
+				JFrame addQuery = new JFrame("Add an entry");
+				String insertPlace = JOptionPane.showInputDialog(addQuery, "What integer are you looking for?");
+				int index = Integer.valueOf(insertPlace);
+				canvas.arrListSearch(index);
 				break;
 			case EDIT_ARRLIST:
 				Point accClick2 = new Point((int) e.getX(), (int) e.getY());
