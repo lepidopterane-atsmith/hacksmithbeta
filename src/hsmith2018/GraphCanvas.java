@@ -26,8 +26,7 @@ class GraphCanvas extends JComponent {
 		points = new LinkedList<Point>();
 		colors = new LinkedList<Color>();
 		ids = new LinkedList<Integer>();
-		setMinimumSize(new Dimension(500,700));
-		setPreferredSize(new Dimension(500,700));
+		setPreferredSize(new Dimension(300,300));
 	}
 	
 	/**
