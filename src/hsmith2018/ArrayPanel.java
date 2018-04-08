@@ -1,4 +1,5 @@
 package hsmith2018;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
@@ -8,44 +9,25 @@ import java.io.*;
 import javax.swing.*;
 
 /**
- *  A class to implement a GUI that combines GUI interface and text-based input,
- * 	to display a graph of nodes (containing strings) and edges (containing weights/distances)
+ *  A panel to display array
  *  @author  Ha Cao (modded for Array support by Sarah Abowitz)
- *  @version CSC 112, May 1st 2017
+ *  @version Apr 7th, 2018
  */
 
-public class ArrayGUI {
-boolean arrayMode = true;
-	
-	// I need a mock array if I'm gonna do this 
-	// {200,211,222,233,244,255,266,277,288,299}
-	
-	private String addPointStr, rmvPointStr, addEdgeStr, rmvEdgeStr;
-	private String addPtInstr, rmvPtInstr, addEdgeInstr, rmvEdgeInstr;
-	
-	/** The graph to be displayed */
+public class ArrayPanel {	
+	/** The array to be displayed */
 	private static ArrayCanvas canvas;
 
 	/** Label for the input mode instructions */
 	private JLabel instr;
 
 	/** The input mode */
-	private InputMode mode = InputMode.ADD_NODES;
+	private InputMode mode = InputMode.CREATE_ARRAY;
 
 	/** Remember point where last mouse-down event occurred */
 	private Point pointUnderMouse;
 
-	/** Remember point where second-last mouse-down event occurred */
-	private Point previousPoint;
-
-	/** The number of nodes that have been clicked */
-	private int twoNodeClick = 0;
-
-	/** The graph frame */
-	private JFrame graphFrame;
-
 	/** Graph display fields */
-	private Container pane;
 	private JPanel panel1;
 	private GraphMouseListener gml;
 
@@ -53,119 +35,49 @@ boolean arrayMode = true;
 	private JPanel panel2;
 
 	/** Constructor */
-	public ArrayGUI() {
-		// Initialize the graph display and control fields
-		graphFrame = new JFrame("Graph GUI");
-		pane = graphFrame.getContentPane();
+	public ArrayPanel(JComponent panel) {
+		// Initialize the array display and control fields
 		canvas = new ArrayCanvas();
 		panel1 = new JPanel();
 		gml = new GraphMouseListener();
-		instr = new JLabel("Click to add new nodes; drag to move.");
+		instr = new JLabel("");
 		panel2 = new JPanel();
+		createComponents(panel);
 	}
-
-	/** 
-	 * A method to find index in the list of point under mouse 
-	 * @param pointUnderMouse The point where the last mouse event occurred
-	 * @return The index of point under mouse in the list of points
-	 */
 	
-
-	
-
-	/**
-	 *  Schedule a job for the event-dispatching thread,
-	 *  creating and showing this application's GUI
-	 */
-	public static void main(String[] args) {
-		final ArrayGUI GUI = new ArrayGUI();
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				GUI.createAndShowGUI();
-			}
-		});
-
-		// If the user input a file 
-		
-	}
-
-	/** Set up the GUI window */
-	public void createAndShowGUI() {
-		// Make sure we have nice window decorations
-		JFrame.setDefaultLookAndFeelDecorated(true);
-
-		// Create and set up the window
-		graphFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		// Add components
-		createComponents(graphFrame);
-
-		// Display the window.
-		graphFrame.pack();
-		graphFrame.setVisible(true);
-	}
-
 	/** Puts content in the GUI window */
-	public void createComponents(JFrame frame) {
-		// Graph display
-		pane.setLayout(new FlowLayout());
+	public void createComponents(JComponent panel) {
+		// Array display
+		panel.setLayout(new FlowLayout());
 		panel1.setLayout(new BorderLayout());
 		canvas.addMouseListener(gml);
 		canvas.addMouseMotionListener(gml);
 		panel1.add(canvas);
-		panel1.add(instr,BorderLayout.NORTH);
-		pane.add(panel1);
+		panel1.add(instr, BorderLayout.NORTH);
+		
+		panel.add(panel1);
 
 		// Controls
-		panel2.setLayout(new GridLayout(5,2));
-
-		if (arrayMode){
-			addPointStr = "Add Entry";
-			rmvPointStr = "Remove Entry";
-			addEdgeStr = "Access Entry"; // simulation will simulate getting that entry
-			rmvEdgeStr = "Search Array";
-		}else{
-			addPointStr = "Add/Move Nodes";
-			rmvPointStr = "Remove Nodes";
-			addEdgeStr = "Add Edges";
-			rmvEdgeStr = "Remove Edges";
-		}
+		panel2.setLayout(new GridLayout(5,2));	
 		
-		JButton addPointButton = new JButton(addPointStr);
-		panel2.add(addPointButton);
-		addPointButton.addActionListener(new AddNodeListener());
+		JButton createArrayButton = new JButton("Create a new array");
+		panel2.add(createArrayButton);
+		createArrayButton.addActionListener(new createArrayListener());
 
-		JButton rmvPointButton = new JButton(rmvPointStr);
-		panel2.add(rmvPointButton);
-		rmvPointButton.addActionListener(new RmvNodeListener());
+		JButton changeValueButton = new JButton("Change value of an element");
+		panel2.add(changeValueButton);
+		changeValueButton.addActionListener(new changeValueListener());
 
-		JButton addEdgeButton = new JButton(addEdgeStr);
-		panel2.add(addEdgeButton);
-		addEdgeButton.addActionListener(new AddEdgeListener());
-
-		JButton rmvEdgeButton = new JButton(rmvEdgeStr);
-		panel2.add(rmvEdgeButton);
-		rmvEdgeButton.addActionListener(new RmvEdgeListener());	
-
-
-		JButton BFTButton = new JButton("Edit Entries");
-		panel2.add(BFTButton);
-		BFTButton.addActionListener(new BFTListener());	
-	
-	
+		JButton accessButton = new JButton("Access an element by index");
+		panel2.add(accessButton);
+		accessButton.addActionListener(new accessListener());
 		
-		pane.add(panel2);	
+		JButton findButton = new JButton("Find an element in the array");
+		panel2.add(findButton);
+		findButton.addActionListener(new findListener());
+		
+		panel.add(panel2);	
 	}
-
-	/** 
-	 *  Return a point found within the drawing radius of the given location, 
-	 *  or null if none
-	 *
-	 *  @param x  The x coordinate of the location
-	 *  @param y  The y coordinate of the location
-	 *  @return  A point from the canvas if there is one covering this location, 
-	 *  or a null reference if not
-	 */
 
 	public boolean zoneClicked(int x1, int x2, int y1, int y2, Point pt){
 		int xPrime = (int) pt.getX();
@@ -173,7 +85,6 @@ boolean arrayMode = true;
 		boolean horiz = false, vert = false;
 		if (x1 < xPrime && x2 > xPrime){
 			horiz = true;
-		    //	System.out.println(horiz);
 		}
 		if (y1 < yPrime && y2 > yPrime){
 			vert = true;
@@ -186,14 +97,14 @@ boolean arrayMode = true;
 	
 	/** Constants for recording the input mode */
 	enum InputMode {
-		ADD_NODES, RMV_NODES, ADD_EDGES, RMV_EDGES, BFT, DFT, SHORTEST_PATH_TO_ALL, SHORTEST_PATH_TO_ONE, OUT_PUT
+		CREATE_ARRAY, CHANGE_VALUE, ACCESS, FIND
 	}
 
-	/** Listener for AddNode button */
-	private class AddNodeListener implements ActionListener {
-		/** Event handler for AddPoint button */
+	/** Listener for createArray button */
+	private class createArrayListener implements ActionListener {
+		/** Event handler for createArray button */
 		public void actionPerformed(ActionEvent e) {
-			mode = InputMode.ADD_NODES;
+			mode = InputMode.CREATE_ARRAY;
 			addPtInstr = "Click above, between, or below slots to add an element.";
 			instr.setText(addPtInstr);
 			//defaultVar(canvas);
@@ -238,10 +149,11 @@ boolean arrayMode = true;
 		/** Event handler for BFT button */
 		public void actionPerformed(ActionEvent e) {
 			mode = InputMode.BFT;
-			instr.setText("Click an element to change its value.");
+			instr.setText("Click a node to broad-traverse the graph.");
 			//defaultVar(canvas);
 		}
 	}
+
 
 	/** Mouse listener for ArrayCanvas element */
 	private class GraphMouseListener extends MouseAdapter
@@ -265,7 +177,8 @@ boolean arrayMode = true;
 				} else {
 					instr.setText("Addition out of bounds.");
 				}
-			}else{
+			}
+			else{
 						Toolkit.getDefaultToolkit().beep();
 						JFrame frame = new JFrame("");
 						// Warning
@@ -310,7 +223,7 @@ boolean arrayMode = true;
 					for (int i = 0; i < arrLen; i++){
 						int y1 = 26+(60*i);
 						int y2 = 76+(60*i);
-						if (zoneClicked(22,422,y1,y2,accClick)) {itemClicked = i;}
+						if (zoneClicked(22, 422, y1, y2, accClick)) {itemClicked = i;}
 					}
 					instr.setText("The item, if accessed, is in cyan.");
 					if(itemClicked < canvas.getArr().length){
@@ -326,11 +239,7 @@ boolean arrayMode = true;
 				break ;		
 			case RMV_EDGES:
 				// TODO Traversal Coming Soon!!!!!!
-				JFrame addQuery = new JFrame("Add an entry");
-				String insertPlace = JOptionPane.showInputDialog(addQuery, "What integer are you looking for?");
-				int index = Integer.valueOf(insertPlace);
-				canvas.arrSearch(index);
-	
+				canvas.repaint();
 				break;	
 			case BFT:
 				// TODO Editing Coming Soon!!!!!
@@ -369,5 +278,5 @@ boolean arrayMode = true;
 
 	// Empty but necessary to comply with MouseMotionListener interface
 	public void mouseMoved(MouseEvent e) {}
-}
-}
+	}
+}	
