@@ -49,7 +49,7 @@ public class GraphPanel {
 		gml = new GraphMouseListener();
 		instr = new JLabel("Click to add new nodes; drag to move.");
 		panel2 = new JPanel();
-		txtConsole = new JTextArea();
+		txtConsole = new JTextArea(20,120);
 
 		// Now create a new TextAreaOutputStream to write to our JTextArea control and wrap a
 		// PrintStream around it to support the println/printf methods.
@@ -130,14 +130,14 @@ public class GraphPanel {
 	/** Puts content in the GUI window */
 	public void createComponents(JComponent panel) {
 		// Graph display
-		panel.setLayout(new FlowLayout());
+		panel.setLayout(new BorderLayout());
 		panel1.setLayout(new BorderLayout());
 		canvas.addMouseListener(gml);
 		canvas.addMouseMotionListener(gml);
 		panel1.add(canvas);
 		panel1.add(instr, BorderLayout.NORTH);		
 
-		panel.add(panel1);
+		panel.add(panel1, BorderLayout.NORTH);
 		
 		// Controls
 		panel2.setLayout(new GridLayout(10, 1));
@@ -178,10 +178,10 @@ public class GraphPanel {
 		panel2.add(clearButton);
 		clearButton.addActionListener(new ClearListener());	
 		
-		panel2.add(txtConsole);
-		panel2.add(new JScrollPane(txtConsole));
+		//panel.add(txtConsole);
+		panel.add(new JScrollPane(txtConsole), BorderLayout.CENTER);
 		
-		panel.add(panel2);	
+		panel.add(panel2, BorderLayout.EAST);	
 	}
 
 	/** 
