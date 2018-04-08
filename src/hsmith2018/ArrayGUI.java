@@ -64,15 +64,6 @@ boolean arrayMode = true;
 		panel2 = new JPanel();
 	}
 
-	/** 
-	 * A method to find index in the list of point under mouse 
-	 * @param pointUnderMouse The point where the last mouse event occurred
-	 * @return The index of point under mouse in the list of points
-	 */
-	
-
-	
-
 	/**
 	 *  Schedule a job for the event-dispatching thread,
 	 *  creating and showing this application's GUI
@@ -227,7 +218,7 @@ boolean arrayMode = true;
 		/** Event handler for RmvEdge button */
 		public void actionPerformed(ActionEvent e) {
 			mode = InputMode.RMV_EDGES;
-			rmvEdgeInstr = "Click an array element to search for it.";
+			rmvEdgeInstr = "Click anwywhere to start a search.";
 			instr.setText(rmvEdgeInstr);
 			//defaultVar(canvas);
 		}
