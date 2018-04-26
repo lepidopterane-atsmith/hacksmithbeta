@@ -1,0 +1,20 @@
+1. How to run the program?
+- The program contains multiple .java files, so you'll need to compile all of them first.
+- After that, you'll run the TabbedPaneGUI.java. It's a Java application and it will show a GUI for you to play with!
+
+2. How to use the program?
+- On the GUI, there will be several tabs at the top, each tab representing a data structure. 
+By clicking each tab, you'll switch to a different data structure. 
+- On each tab, there will be some buttons on the right, 
+and you can click them and follow whatever instructions you are given on the top of the tab,
+in order to manipulate the data structure with its given methods. 
+
+3. Some known logical errors?
+- Right now, the program works, but the three data structures already implemented do not look very in sync with each other in style.
+- In the Graph data structure, the nodes are hard to click sometimes (they don't receive the clicks),
+because the way I identify whether a click is in the node is a bit not accurate mathematically. 
+Hence, I'll need to improve this. 
+- If you click ArrayList before Graph and Array tabs, it shows nothing.
+However, if you click Graph, Array, and then ArrayList tabs, everything is fine.
+This is a bug that haven't been able to solve yet. 
+
