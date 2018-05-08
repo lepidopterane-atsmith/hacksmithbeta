@@ -1,6 +1,10 @@
 1. How to run the program?
 - The program contains multiple .java files, so you'll need to compile all of them first.
 - After that, you'll run the TabbedPaneGUI.java. It's a Java application and it will show a GUI for you to play with!
+- You may want to run this in Eclipse. 
+If so, you'll need to make sure that the Execution Environment is JavaSE-1.8,
+and the Compiler compliance level is 1.8. 
+Otherwise, they wouldn't be compatible and the Java application wouldn't be able to launched.
 
 2. How to use the program?
 - On the GUI, there will be several tabs at the top, each tab representing a data structure. 
